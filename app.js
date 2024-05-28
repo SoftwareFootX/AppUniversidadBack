@@ -2,7 +2,10 @@ const express = require('express');
 const config = require('./src/config');
 const cors = require('cors');
 
-const alumnos = require('./src/modulos/rutas');
+const alumnos = require('./src/modulos/alumnos/rutas');
+const universidad = require('./src/modulos/universidad/rutas');
+const paises = require('./src/modulos/paises-estados/rutas');
+const estados = require('./src/modulos/paises-estados/rutas');
 
 const app = express();
 
@@ -25,5 +28,8 @@ app.use(
 
 // Rutas
 app.use('/api/alumnos', alumnos);
+app.use('/api/universidad', universidad);
+app.use('/api/paises', paises);
+app.use('/api/estados', estados);
 
 module.exports = app;

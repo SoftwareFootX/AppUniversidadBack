@@ -36,6 +36,47 @@ function conMysql() {
 
 conMysql();
 
+
+const pool = mysql.createPool({
+  connectionLimit: 10, // Número máximo de conexiones en el pool
+  host: config.mysql.host,
+  user: config.mysql.user,
+  password: config.mysql.password,
+  database: config.mysql.database,
+});
+
+ async function executeQuery (query, params = []) {
+  return new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        console.error('[db err]', err);
+        return reject(err);
+      }
+
+      console.log('Solicitud de conexión a la base de datos.');
+
+      connection.query(query, params, (err, results) => {
+        if (err) {
+          console.error('[db err]', err);
+          connection.release(); // Liberar la conexión en caso de error
+          return reject(err);
+        }
+
+        connection.release(); // Liberar la conexión después de su uso
+        resolve(results);
+      });
+      console.log('Consulta ejecutada. Cerrando conexión.');
+    });
+  });
+}
+
 module.exports = {
-  conexion
+   executeQuery, conexion
 };
+
+
+
+
+
+
+
