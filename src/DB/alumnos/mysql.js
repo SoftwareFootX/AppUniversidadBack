@@ -1,122 +1,190 @@
 const bcrypt = require('bcrypt');
-const {conexion} = require('../conexion');
+const {queryDatabase} = require('../conexion');
 
 function alumnos(tabla) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `SELECT * FROM ${tabla} order by apellido asc`,
-      (error, result) => {
-        if (error) return reject(error);
+    queryDatabase(`SELECT * FROM ${tabla} ORDER BY apellido ASC`)
+      .then(result => {
         resolve(result);
-      },
-    );
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
 function actualizar_alumno(tabla, data) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `UPDATE ${tabla} SET ? WHERE idalumnos = ?`,
-      [data, data.idalumnos],
-      (error, result) => {
-        return error ? reject(error) : resolve(result);
-      },
-    );
+    queryDatabase(`UPDATE ${tabla} SET ? WHERE idalumnos = ?`, [
+      data,
+      data.idalumnos,
+    ])
+      .then(result => {
+        resolve(result);
+        console.log(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function fichas(tabla) {
+  return new Promise((resolve, reject) => {
+    queryDatabase(`SELECT * FROM ${tabla}`)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function ficha_por_id(tabla, id) {
+  return new Promise((resolve, reject) => {
+    queryDatabase(`SELECT * FROM ${tabla} WHERE fk_alumno = ?`, [id])
+      .then(result => {
+        resolve(result);
+        console.log(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function agregar_ficha(tabla, data) {
+  console.log('Nombre tabla: ', tabla, data);
+
+  return new Promise((resolve, reject) => {
+    queryDatabase(`INSERT INTO ${tabla} SET ?`, data)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
+function actualizar_ficha(tabla, data) {
+  return new Promise((resolve, reject) => {
+    queryDatabase(`SELECT * FROM ${tabla} WHERE fk_alumno = ?`, [
+      data.fk_alumno,
+    ])
+      .then(results => {
+        if (results.length === 0) {
+          console.log('No se encontró ficha.... Agrega');
+          //results = agregar_ficha(tabla, data);
+          agregar_ficha(tabla, data);
+          resolve(results);
+        } else {
+          console.log('Encontró ficha.... Actualiza');
+          queryDatabase(`UPDATE ${tabla} SET ? WHERE fk_alumno = ?`, [
+            data,
+            data.fk_alumno,
+          ]).then(result => {
+            resolve(result);
+            console.log(result);
+          });
+        }
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
 function eliminar_alumno(tabla, id) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `DELETE FROM ${tabla} WHERE idalumnos = ?`,
-      id,
-      (error, result) => {
-        return error ? reject(error) : resolve(result);
-      },
-    );
+    queryDatabase(`DELETE FROM ${tabla} WHERE idalumnos = ?`, id)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
 function login_alumno(tabla, data) {
-  console.log(data);
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `SELECT * FROM ${tabla} WHERE mail = ?`,
-      [data.mail],
-      (error, results) => {
-        if (error) return reject(error);
+    queryDatabase(`SELECT * FROM ${tabla} WHERE mail = ?`, [data.mail])
+      .then(results => {
         if (results.length === 0) {
-          return resolve([console.log('No se encontro ningun usuario')]);
+          console.log('No se encontró ningún usuario');
+          resolve(results);
+        } else {
+          const user = results[0];
+          const passwordMatch = bcrypt.compareSync(
+            data.contrasenia,
+            user.contrasenia,
+          );
+          if (!passwordMatch) {
+            console.log('Contraseña incorrecta');
+            resolve(results);
+          } else {
+            resolve({user});
+          }
         }
-        const user = results[0];
-        const passwordMatch = bcrypt.compareSync(
-          data.contrasenia, // no encriptado
-          user.contrasenia, // encriptado
-        );
-        if (!passwordMatch) {
-          return resolve([console.log('Contraseña incorrecta')]);
-        }
-        resolve({user});
-      },
-    );
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
-function registro_alumno(tabla, data) {
+function agregar_alumno(tabla, data) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `SELECT * FROM ${tabla} WHERE mail = ?`,
-      [data.mail],
-      (error, results) => {
-        if (error) return reject(error);
+    queryDatabase(`SELECT * FROM ${tabla} WHERE mail = ?`, [data.mail])
+      .then(results => {
         if (results.length > 0) {
           const err = new Error('mail_repetida');
           err.status = 400;
-          return reject(err);
+          throw err;
+        } else {
+          return queryDatabase(`SELECT * FROM ${tabla} WHERE matricula = ?`, [
+            data.matricula,
+          ]);
         }
-        conexion.query(
-          `SELECT * FROM ${tabla} WHERE matricula = ?`,
-          [data.matricula],
-          (error, results) => {
-            if (error) return reject(error);
-
-            if (results.length > 0) {
-              const err = new Error('matricula_repetida');
-              err.status = 400;
-              return reject(err);
-            }
-            const contrasenia = data.contrasenia;
-            const saltRounds = 10;
-            const salt = bcrypt.genSaltSync(saltRounds);
-            const hash = bcrypt.hashSync(contrasenia, salt);
-            data.contrasenia = hash;
-
-            conexion.query(
-              `INSERT INTO ${tabla} SET ?`,
-              data,
-              (error, result) => {
-                if (error) return reject(error);
-                conexion.query(
-                  `SELECT * FROM ${tabla} WHERE idalumnos = ?`,
-                  [result.insertId],
-                  (error, results) => {
-                    if (error) return reject(error);
-                    resolve(results);
-                  },
-                );
-              },
-            );
-          },
-        );
-      },
-    );
+      })
+      .then(results => {
+        if (results.length > 0) {
+          const err = new Error('matricula_repetida');
+          err.status = 400;
+          throw err;
+        } else {
+          const contrasenia = data.contrasenia;
+          const saltRounds = 10;
+          const salt = bcrypt.genSaltSync(saltRounds);
+          const hash = bcrypt.hashSync(contrasenia, salt);
+          data.contrasenia = hash;
+          return queryDatabase(`INSERT INTO ${tabla} SET ?`, data);
+        }
+      })
+      .then(result => {
+        return queryDatabase(`SELECT * FROM ${tabla} WHERE idalumnos = ?`, [
+          result.insertId,
+        ]);
+      })
+      .then(results => {
+        resolve(results);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
 module.exports = {
+  actualizar_ficha,
   alumnos,
+  ficha_por_id,
+  fichas,
   actualizar_alumno,
   eliminar_alumno,
   login_alumno,
-  registro_alumno,
+  agregar_alumno,
+  agregar_ficha,
 };

@@ -4,40 +4,49 @@ const controlador = require('./controlador');
 
 const router = express.Router();
 
-router.get('/', administradores);
-router.post('/login_admin', login_admin);
-router.post('/registro_admin', registro_admin);
-router.post('/', actualizar_admin);
-router.delete('/:id', eliminar_admin);
+router.get('/', universidades);
+router.get('/:id', universidad);
+router.post('/agregar_universidad', agregar_universidad);
+router.post('/', actualizar_universidad);
+router.delete('/:id', eliminar_universidad);
 
-async function administradores(req, res, next) {
+async function universidades(req, res, next) {
   try {
-    const items = await controlador.administradores();
+    const items = await controlador.universidades();
     respuesta.success(req, res, items, 200);
   } catch (err) {
     next(err);
   }
 }
 
-async function actualizar_admin(req, res, next) {
+async function universidad(req, res, next) {
   try {
-    const items = await controlador.actualizar_admin(req.body);
-    const mensaje = 'Admin actualizado';
+    const items = await controlador.universidad(req.params.id);
+    respuesta.success(req, res, items, 200);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function actualizar_universidad(req, res, next) {
+  try {
+    const items = await controlador.actualizar_universidad(req.body);
+    const mensaje = 'Universidad actualizada';
     respuesta.success(req, res, mensaje, 201);
   } catch (error) {
     next(error);
   }
 }
 
-async function eliminar_admin(req, res, next) {
+async function eliminar_universidad(req, res, next) {
   try {
     const id_a_eliminar = req.params.id;
-    const items = await controlador.eliminar_admin(id_a_eliminar);
+    const items = await controlador.eliminar_universidad(id_a_eliminar);
     if (items.affectedRows === 1) {
       respuesta.success(
         req,
         res,
-        'Administrador eliminado correctamente',
+        'Universidad eliminada correctamente',
         200,
         id_a_eliminar,
         items.affectedRows,
@@ -46,7 +55,7 @@ async function eliminar_admin(req, res, next) {
       respuesta.success(
         req,
         res,
-        'No se encontro el administrador',
+        'No se encontro la universidad',
         404,
         id_a_eliminar,
         items.affectedRows,
@@ -57,21 +66,9 @@ async function eliminar_admin(req, res, next) {
   }
 }
 
-async function login_admin(req, res, next) {
+async function agregar_universidad(req, res, next) {
   try {
-    const items = await controlador.login_admin(req.body);
-    if (items.length === 0) {
-      return respuesta.success(req, res, 'Nombre de usuario no existe.', 401);
-    }
-    respuesta.success(req, res, items, 200);
-  } catch (err) {
-    next(err);
-  }
-}
-
-async function registro_admin(req, res, next) {
-  try {
-    const items = await controlador.registro_admin(req.body);
+    const items = await controlador.agregar_universidad(req.body);
     if (items) {
       // Se encontraron elementos en items
       return respuesta.success(req, res, items, 200);

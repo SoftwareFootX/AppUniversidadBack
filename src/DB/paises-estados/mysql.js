@@ -1,26 +1,26 @@
-const {conexion} = require('../conexion');
+const {queryDatabase} = require('../conexion');
 
 function paises_todos(tabla) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `SELECT * FROM ${tabla} order by pais_nombre asc`,
-      (error, result) => {
-        if (error) return reject(error);
+    queryDatabase(`SELECT * FROM ${tabla} order by pais_nombre asc`)
+      .then(result => {
         resolve(result);
-      },
-    );
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
 function estados_por_pais(tabla, fk_pais) {
   return new Promise((resolve, reject) => {
-    conexion.query(
-      `SELECT * FROM ${tabla} WHERE fk_pais = ${fk_pais}`,
-      (error, result) => {
-        if (error) return reject(error);
+    queryDatabase(`SELECT * FROM ${tabla} WHERE fk_pais = ${fk_pais}`)
+      .then(result => {
         resolve(result);
-      },
-    );
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 }
 
