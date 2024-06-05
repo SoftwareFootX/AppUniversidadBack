@@ -5,6 +5,8 @@ require('dotenv').config({path: './.env'});
 module.exports = {
   app: {
     port: process.env.PORT || 4000,
+    scret: process.env.SECRET_SEED,
+    ruta_api: process.env.RUTA_API,
   },
   mysql: {
     host: process.env.MYSQL_HOST,

@@ -1,24 +1,26 @@
 const express = require('express');
 const respuesta = require('../../red/respuestas');
 const controlador = require('./controlador');
+const {authToken} = require('../../middlewares/authToken');
 
 const router = express.Router();
 
-/***RUTAS ALUMNOS***/
-router.get('/', alumnos);
+/***** RUTAS ALUMNOS *****/
+
+router.get('/', authToken, alumnos);
 router.post('/login_alumno', login_alumno);
-router.post('/agregar_alumno', agregar_alumno);
-router.post('/', actualizar_alumno);
-router.delete('/:id', eliminar_alumno);
+router.post('/agregar_alumno', authToken, agregar_alumno);
+router.post('/', authToken, actualizar_alumno);
+router.delete('/:id', authToken, eliminar_alumno);
 
-/***RUTAS FICHAS***/
+/***** RUTAS FICHA ALUMNOS *****/
 
-router.post('/actualizar_ficha', actualizar_ficha);
-router.get('/fichas', fichas);
-router.get('/ficha_por_id/:id', ficha_por_id);
-router.post('/agregar_ficha', agregar_ficha);
+router.post('/actualizar_ficha', authToken, actualizar_ficha);
+router.get('/fichas', authToken, fichas);
+router.get('/ficha_por_id/:id', authToken, ficha_por_id);
+router.post('/agregar_ficha', authToken, agregar_ficha);
 
-/***** GESTION DE ALUMNO ******/
+/***** RUTAS ALUMNOS *****/
 
 async function alumnos(req, res, next) {
   try {
@@ -95,7 +97,7 @@ async function agregar_alumno(req, res, next) {
   }
 }
 
-/***** GESTION DE FICHA DE ALUMNO ******/
+/***** RUTAS FICHA ALUMNOS *****/
 
 async function fichas(req, res, next) {
   try {

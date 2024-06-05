@@ -1,5 +1,8 @@
 const {queryDatabase} = require('../conexion');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../../config');
+const secret = config.app.port;
 
 function usuarios_uni(tabla) {
   return new Promise((resolve, reject) => {
@@ -62,8 +65,15 @@ const login_usuario_uni = (tabla, data) => {
             console.log('Contraseña incorrecta');
             resolve(null);
           } else {
-            console.log('Usuario logueado exitosamente');
-            resolve(user);
+            const payload = {
+              userId: user.idusuario_universidad,
+              userEmail: user.usu_mail,
+              // Agrega más datos del usuario si los necesitas en el token
+            };
+
+            const token = jwt.sign(payload, secret, {expiresIn: '1h'}); // Cambia 'secreto' por tu clave secreta y define el tiempo de expiración deseado
+
+            resolve({user, token});
           }
         }
       })

@@ -3,7 +3,8 @@ const db = require('../../DB/alumnos/mysql');
 const ALUMNOS = 'alumnos';
 const FICHA = 'fichas_clinicas_alumnos';
 
-//*********** GESTION DE FICHAS CLINICAS ********/
+/***** CONTROLADOR FICHA ALUMNOS *****/
+
 function fichas() {
   return db.fichas(FICHA);
 }
@@ -20,7 +21,7 @@ function actualizar_ficha(body) {
   return db.actualizar_ficha(FICHA, body);
 }
 
-//*********** GESTION DE TABLA ALUMNOS ********/
+/***** CONTROLADOR ALUMNOS *****/
 
 function alumnos() {
   return db.alumnos(ALUMNOS);
@@ -43,14 +44,14 @@ function agregar_alumno(body) {
 }
 
 module.exports = {
-  //*********** GESTION DE FICHAS CLINICAS ********/
+  /***** CONTROLADOR FICHA ALUMNOS *****/
 
   fichas,
   ficha_por_id,
   agregar_ficha,
   actualizar_ficha,
 
-  //*********** GESTION DE TABLA ALUMNOS ********/
+  /***** CONTROLADOR ALUMNOS *****/
 
   alumnos,
   login_alumno,

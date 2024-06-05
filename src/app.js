@@ -21,10 +21,6 @@ app.set('port', config.app.port);
 
 //Configuración de CORS:
 
-const api_ruta = config.app.ruta_api;
-
-console.log(api_ruta);
-
 app.use(
   cors({
     origin: '*',
@@ -32,10 +28,10 @@ app.use(
 );
 
 // Rutas
-app.use(`${api_ruta}alumnos`, alumnos);
-app.use(`${api_ruta}universidades`, universidades);
-app.use(`${api_ruta}usuarios_universidad`, usuarios_universidad);
-app.use(`${api_ruta}paises`, paises);
-app.use(`${api_ruta}estados`, estados);
+app.use('/api/alumnos', alumnos);
+app.use('/api/universidades', universidades);
+app.use('/api/usuarios_universidad', usuarios_universidad);
+app.use('/api/paises', paises);
+app.use('/api/estados', estados);
 
 module.exports = app;
