@@ -16,7 +16,23 @@ function usuarios_uni(tabla) {
   });
 }
 
+function usuario_por_id(tabla, id) {
+  console.log(tabla, id);
+  return new Promise((resolve, reject) => {
+    queryDatabase(`SELECT * FROM ${tabla} WHERE idusuario_universidad = ?`, [
+      id,
+    ])
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 function actualizar_usuario_uni(tabla, data) {
+  console.log(data);
   return new Promise((resolve, reject) => {
     queryDatabase(`UPDATE ${tabla} SET ? WHERE idusuario_universidad = ?`, [
       data,
@@ -132,6 +148,7 @@ function agregar_usuario_uni(tabla, data) {
 
 module.exports = {
   usuarios_uni,
+  usuario_por_id,
   actualizar_usuario_uni,
   eliminar_usuario_uni,
   login_usuario_uni,

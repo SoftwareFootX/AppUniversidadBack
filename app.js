@@ -7,6 +7,7 @@ const universidades = require('./src/modulos/universidades/rutas');
 const usuarios_universidad = require('./src/modulos/usuarios-universidad/rutas');
 const paises = require('./src/modulos/paises-estados/rutas');
 const estados = require('./src/modulos/paises-estados/rutas');
+const api_ruta = config.app.ruta_api;
 
 const app = express();
 
@@ -20,10 +21,6 @@ app.set('port', config.app.port);
 //TODO: Revisar proteccion de solicitudes
 
 //Configuración de CORS:
-
-const api_ruta = config.app.ruta_api;
-
-console.log(api_ruta);
 
 app.use(
   cors({

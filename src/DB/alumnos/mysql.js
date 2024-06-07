@@ -19,6 +19,19 @@ function alumnos(tabla) {
   });
 }
 
+function alumno_por_id(tabla, id) {
+  console.log(tabla, id);
+  return new Promise((resolve, reject) => {
+    queryDatabase(`SELECT * FROM ${tabla} WHERE idalumnos = ?`, [id])
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 function eliminar_alumno(tabla, id) {
   return new Promise((resolve, reject) => {
     queryDatabase(`DELETE FROM ${tabla} WHERE idalumnos = ?`, id)
@@ -54,7 +67,7 @@ function login_alumno(tabla, data) {
               // Agrega más datos del usuario si los necesitas en el token
             };
 
-            const token = jwt.sign(payload, secret, {expiresIn: '1h'}); // Cambia 'secreto' por tu clave secreta y define el tiempo de expiración deseado
+            const token = jwt.sign(payload, secret, {expiresIn: '4h'}); // Cambia 'secreto' por tu clave secreta y define el tiempo de expiración deseado
 
             resolve({user, token});
           }
@@ -162,21 +175,15 @@ function agregar_ficha(tabla, data) {
 }
 
 function actualizar_ficha(tabla, data) {
-  console.log(data);
   return new Promise((resolve, reject) => {
     queryDatabase(`SELECT * FROM ${tabla} WHERE fk_alumno = ?`, [
       data.fk_alumno,
     ])
       .then(results => {
         if (results.length === 0) {
-          console.log('No se encontró ficha.... Agrega');
-          //results = agregar_ficha(tabla, data);
           agregar_ficha(tabla, data);
           resolve(results);
         } else {
-          console.log(
-            `Se actualizó la ficha existente del alumno ID: ${data.fk_alumno}`,
-          );
           queryDatabase(`UPDATE ${tabla} SET ? WHERE fk_alumno = ?`, [
             data,
             data.fk_alumno,
@@ -191,14 +198,33 @@ function actualizar_ficha(tabla, data) {
   });
 }
 
+function eliminar_ficha(tabla, id) {
+  return new Promise((resolve, reject) => {
+    queryDatabase(`DELETE FROM ${tabla} WHERE fk_alumno = ?`, id)
+      .then(result => {
+        resolve(result);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+}
+
 module.exports = {
-  actualizar_ficha,
-  alumnos,
-  ficha_por_id,
+  /***** DB FICHA ALUMNOS *****/
+
   fichas,
+  ficha_por_id,
+  agregar_ficha,
+  actualizar_ficha,
+  eliminar_ficha,
+
+  /***** DB ALUMNOS *****/
+
+  alumnos,
+  alumno_por_id,
   actualizar_alumno,
   eliminar_alumno,
   login_alumno,
   agregar_alumno,
-  agregar_ficha,
 };

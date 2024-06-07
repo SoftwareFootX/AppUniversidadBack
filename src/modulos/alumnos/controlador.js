@@ -13,18 +13,21 @@ function ficha_por_id(id) {
   return db.ficha_por_id(FICHA, id);
 }
 
-function agregar_ficha(body) {
-  return db.agregar_ficha(FICHA, body);
-}
-
 function actualizar_ficha(body) {
   return db.actualizar_ficha(FICHA, body);
 }
 
+function eliminar_ficha(body) {
+  return db.eliminar_ficha(FICHA, body);
+}
 /***** CONTROLADOR ALUMNOS *****/
 
 function alumnos() {
   return db.alumnos(ALUMNOS);
+}
+
+function alumno_por_id(id) {
+  return db.alumno_por_id(ALUMNOS, id);
 }
 
 function actualizar_alumno(body) {
@@ -48,12 +51,13 @@ module.exports = {
 
   fichas,
   ficha_por_id,
-  agregar_ficha,
   actualizar_ficha,
+  eliminar_ficha,
 
   /***** CONTROLADOR ALUMNOS *****/
 
   alumnos,
+  alumno_por_id,
   login_alumno,
   actualizar_alumno,
   agregar_alumno,

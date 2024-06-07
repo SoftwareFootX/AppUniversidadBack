@@ -9,6 +9,7 @@ const paises = require('./src/modulos/paises-estados/rutas');
 const estados = require('./src/modulos/paises-estados/rutas');
 
 const app = express();
+const api_ruta = config.app.ruta_api;
 
 // Middleware para manejar solicitudes HTTP que envían datos mediante formularios HTML:
 
@@ -28,10 +29,10 @@ app.use(
 );
 
 // Rutas
-app.use('/api/alumnos', alumnos);
-app.use('/api/universidades', universidades);
-app.use('/api/usuarios_universidad', usuarios_universidad);
-app.use('/api/paises', paises);
-app.use('/api/estados', estados);
+app.use(`${api_ruta}alumnos`, alumnos);
+app.use(`${api_ruta}universidades`, universidades);
+app.use(`${api_ruta}usuarios_universidad`, usuarios_universidad);
+app.use(`${api_ruta}paises`, paises);
+app.use(`${api_ruta}estados`, estados);
 
 module.exports = app;

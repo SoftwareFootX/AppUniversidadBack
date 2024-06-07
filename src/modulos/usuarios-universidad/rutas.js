@@ -1,18 +1,30 @@
 const express = require('express');
 const respuesta = require('../../red/respuestas');
 const controlador = require('./controlador');
+const {authToken} = require('../../middlewares/authToken');
 
 const router = express.Router();
 
-router.get('/', usuarios_uni);
+router.get('/', authToken, usuarios_uni);
+router.get('/usuario_por_id/:id', authToken, usuario_por_id);
 router.post('/login_usuario_uni', login_usuario_uni);
-router.post('/agregar_usuario_uni', agregar_usuario_uni);
-router.post('/', actualizar_usuario_uni);
-router.delete('/:id', eliminar_usuario_uni);
+router.post('/agregar_usuario_uni', authToken, agregar_usuario_uni);
+router.post('/', authToken, actualizar_usuario_uni);
+router.delete('/:id', authToken, eliminar_usuario_uni);
 
 async function usuarios_uni(req, res, next) {
   try {
     const items = await controlador.usuarios_uni();
+    respuesta.success(req, res, items, 200);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function usuario_por_id(req, res, next) {
+  try {
+    const id = req.params.id;
+    const items = await controlador.usuario_por_id(id);
     respuesta.success(req, res, items, 200);
   } catch (err) {
     next(err);
