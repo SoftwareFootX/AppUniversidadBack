@@ -1,25 +1,30 @@
-const db = require('../../DB/universidades/mysql');
+const db = require('../../DB/crud_comun');
 
-const TABLA = 'universidades';
+const {universidades_todas} = require('../../DB/config.json');
 
 function universidades() {
-  return db.universidades(TABLA);
+  return db.seleccionar_todo(universidades_todas);
 }
 
 function actualizar_universidad(body) {
-  return db.actualizar_universidad(TABLA, body);
+  return db.actualizar_registro(
+    tablas.universidades_todas,
+    body,
+    'iduniversidad',
+    body.iduniversidad,
+  );
 }
 
-function eliminar_universidad(body) {
-  return db.eliminar_universidad(TABLA, body);
+function eliminar_universidad(id) {
+  return db.eliminar_registro(universidades_todas, 'iduniversidad', id);
 }
 
 function agregar_universidad(body) {
-  return db.agregar_universidad(TABLA, body);
+  return db.agregar_registro(universidades_todas, body);
 }
 
-function universidad(body) {
-  return db.universidad(TABLA, body);
+function universidad(id) {
+  return db.seleccionar_con_id(universidades_todas, 'iduniversidad', id);
 }
 
 module.exports = {

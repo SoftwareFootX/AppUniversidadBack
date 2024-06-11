@@ -3,6 +3,8 @@ const {queryDatabase} = require('../conexion');
 const config = require('../../config');
 const jwt = require('jsonwebtoken');
 
+const db = require('../crud_comun');
+
 const secret = config.app.port;
 
 /***** DB ALUMNOS *****/
@@ -121,109 +123,9 @@ function agregar_alumno(tabla, data) {
   });
 }
 
-function actualizar_alumno(tabla, data) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`UPDATE ${tabla} SET ? WHERE idalumnos = ?`, [
-      data,
-      data.idalumnos,
-    ])
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-/***** DB FICHA ALUMNOS *****/
-
-function fichas(tabla) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`SELECT * FROM ${tabla}`)
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-function ficha_por_id(tabla, id) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`SELECT * FROM ${tabla} WHERE fk_alumno = ?`, [id])
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-function agregar_ficha(tabla, data) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`INSERT INTO ${tabla} SET ?`, data)
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-function actualizar_ficha(tabla, data) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`SELECT * FROM ${tabla} WHERE fk_alumno = ?`, [
-      data.fk_alumno,
-    ])
-      .then(results => {
-        if (results.length === 0) {
-          agregar_ficha(tabla, data);
-          resolve(results);
-        } else {
-          queryDatabase(`UPDATE ${tabla} SET ? WHERE fk_alumno = ?`, [
-            data,
-            data.fk_alumno,
-          ]).then(result => {
-            resolve(result);
-          });
-        }
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
-function eliminar_ficha(tabla, id) {
-  return new Promise((resolve, reject) => {
-    queryDatabase(`DELETE FROM ${tabla} WHERE fk_alumno = ?`, id)
-      .then(result => {
-        resolve(result);
-      })
-      .catch(error => {
-        reject(error);
-      });
-  });
-}
-
 module.exports = {
-  /***** DB FICHA ALUMNOS *****/
-
-  fichas,
-  ficha_por_id,
-  agregar_ficha,
-  actualizar_ficha,
-  eliminar_ficha,
-
-  /***** DB ALUMNOS *****/
-
   alumnos,
   alumno_por_id,
-  actualizar_alumno,
   eliminar_alumno,
   login_alumno,
   agregar_alumno,

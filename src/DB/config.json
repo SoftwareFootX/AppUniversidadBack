@@ -1,0 +1,15 @@
+{
+  "tablas_alumnos": {
+    "talumnos": "alumnos",
+    "tfichas_clinicas": "fichas_clinicas_alumnos",
+    "tfichas_biomecanicas": "ttests_biomecanicos_footx",
+    "fk_alumno": "fk_alumno",
+    "idalumnos": "idalumnos"
+  },
+  "tablas_paises_estados": {
+    "paises": "tpaises",
+    "estados": "testados_paises"
+  },
+  "universidades_todas": "universidades",
+  "usuarios_universidad": "usuarios_universidad"
+}

@@ -1,14 +1,14 @@
 const db = require('../../DB/paises-estados/mysql');
 
-const TABLA_PAIS = 'tpaises';
-const TABLA_ESTADOS = 'testados_paises';
+const {tablas_paises_estados} = require('../../DB/config.json');
+const {paises, estados} = tablas_paises_estados;
 
 const paises_todos = () => {
-  return db.paises_todos(TABLA_PAIS);
+  return db.paises_todos(paises);
 };
 
 const estados_por_pais = fk_pais => {
-  return db.estados_por_pais(TABLA_ESTADOS, fk_pais);
+  return db.estados_por_pais(estados, fk_pais);
 };
 
 module.exports = {

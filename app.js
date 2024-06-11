@@ -3,6 +3,8 @@ const config = require('./src/config');
 const cors = require('cors');
 
 const alumnos = require('./src/modulos/alumnos/rutas');
+const ficha_biomecanica_footx = require('./src/modulos/alumnos/ficha-biomecanica-footx/rutas');
+const ficha_clinica_alumno = require('./src/modulos/alumnos/ficha-clinica/rutas');
 const universidades = require('./src/modulos/universidades/rutas');
 const usuarios_universidad = require('./src/modulos/usuarios-universidad/rutas');
 const paises = require('./src/modulos/paises-estados/rutas');
@@ -30,6 +32,8 @@ app.use(
 
 // Rutas
 app.use(`${api_ruta}alumnos`, alumnos);
+app.use(`${api_ruta}ficha_biomecanica_footx`, ficha_biomecanica_footx);
+app.use(`${api_ruta}ficha_clinica_alumno`, ficha_clinica_alumno);
 app.use(`${api_ruta}universidades`, universidades);
 app.use(`${api_ruta}usuarios_universidad`, usuarios_universidad);
 app.use(`${api_ruta}paises`, paises);

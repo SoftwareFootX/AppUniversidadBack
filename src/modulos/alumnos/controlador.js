@@ -1,61 +1,35 @@
 const db = require('../../DB/alumnos/mysql');
+const {tablas_alumnos} = require('../../DB/config.json');
 
-const ALUMNOS = 'alumnos';
-const FICHA = 'fichas_clinicas_alumnos';
+const db2 = require('../../DB/crud_comun');
 
-/***** CONTROLADOR FICHA ALUMNOS *****/
-
-function fichas() {
-  return db.fichas(FICHA);
-}
-
-function ficha_por_id(id) {
-  return db.ficha_por_id(FICHA, id);
-}
-
-function actualizar_ficha(body) {
-  return db.actualizar_ficha(FICHA, body);
-}
-
-function eliminar_ficha(body) {
-  return db.eliminar_ficha(FICHA, body);
-}
-/***** CONTROLADOR ALUMNOS *****/
+const {talumnos, idalumnos} = tablas_alumnos;
 
 function alumnos() {
-  return db.alumnos(ALUMNOS);
+  return db2.seleccionar_todo(talumnos);
 }
 
 function alumno_por_id(id) {
-  return db.alumno_por_id(ALUMNOS, id);
+  return db.alumno_por_id(talumnos, id);
 }
 
 function actualizar_alumno(body) {
-  return db.actualizar_alumno(ALUMNOS, body);
+  return db2.actualizar_registro(talumnos, body, idalumnos, body.idalumnos);
 }
 
 function eliminar_alumno(body) {
-  return db.eliminar_alumno(ALUMNOS, body);
+  return db.eliminar_alumno(talumnos, body);
 }
 
 function login_alumno(body) {
-  return db.login_alumno(ALUMNOS, body);
+  return db.login_alumno(talumnos, body);
 }
 
 function agregar_alumno(body) {
-  return db.agregar_alumno(ALUMNOS, body);
+  return db.agregar_alumno(talumnos, body);
 }
 
 module.exports = {
-  /***** CONTROLADOR FICHA ALUMNOS *****/
-
-  fichas,
-  ficha_por_id,
-  actualizar_ficha,
-  eliminar_ficha,
-
-  /***** CONTROLADOR ALUMNOS *****/
-
   alumnos,
   alumno_por_id,
   login_alumno,
